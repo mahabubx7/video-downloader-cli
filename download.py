@@ -13,7 +13,11 @@ def download_video(url, directory=None, playlist=False, indexing=None, quality=N
         command.append('--yes-playlist')
 
     if quality:
-        command.extend(['-f', f'bestvideo[height<={quality}]+bestaudio/best'])
+        command.extend(['-f', f'mp4[height<={quality}]'])
+    else:
+        command.extend(['-f', f'mp4[height<=1080]'])
+
+    command.extend(['--merge-output-format', 'mp4'])
 
     subprocess.run(command)
 
@@ -22,7 +26,7 @@ def parse_arguments():
     parser.add_argument('url', help='URL of the video or playlist')
     parser.add_argument('--dir', help='Directory to save the downloaded video(s)')
     parser.add_argument('--playlist', action='store_true', help='Download as playlist')
-    parser.add_argument('--indexing', action='store_true', help='indexing format for playlist videos')
+    parser.add_argument('--indexing', choices=['index', 'serial'], help='indexing format for playlist videos')
     parser.add_argument('--quality', type=int, help='Download video with the specified quality (e.g., 1080)')
 
     return parser.parse_args()
